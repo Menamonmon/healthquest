@@ -62,6 +62,14 @@ const Nav: React.FC<Props> = ({ routes }) => {
   });
 
   useEffect(() => {
+    const pagePath = history.location.pathname;
+    const matchingRoute = routes.find((r) => r.path === pagePath);
+    setCurrentPageTitle(
+      matchingRoute ? matchingRoute.pageTitle : "INVALID PAGE"
+    );
+  }, []);
+
+  useEffect(() => {
     setCurrentRoutes(
       routes.filter((route) => {
         const { _protected, unprotected, onDrawer } = route;
