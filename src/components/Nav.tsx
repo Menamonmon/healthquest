@@ -100,7 +100,13 @@ const Nav: React.FC<Props> = ({ routes }) => {
           {currentPageTitle}
         </Heading>
       </Flex>
-      <Box maxWidth="500px" maxHeight="900px" w="100vw" mx="auto" h="100vh">
+      <Box
+        maxWidth="500px"
+        maxHeight="900px"
+        w="100vw"
+        mx="auto"
+        h="calc(100vh - 60px)"
+      >
         <Switch>
           {routes.map(({ _protected, unprotected, pageTitle, ...rest }) => {
             if (_protected) {

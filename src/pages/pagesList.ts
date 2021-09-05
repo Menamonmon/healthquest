@@ -9,6 +9,7 @@ import ReminderDetailsPage from "./ReminderDetailsPage";
 import RemindersPage from "./RemindersPage";
 import RewardsPage from "./RewardsPage";
 import SignInPage from "./SignInPage";
+import SignOutPage from "./SignOutPage";
 
 const pagesList: NavRoute[] = [
   {
@@ -84,6 +85,14 @@ const pagesList: NavRoute[] = [
     component: PatientHomePage,
     pageTitle: "Patient Home",
     path: "/",
+    redirect: "/sign-in",
+    _protected: true,
+    onDrawer: true,
+  },
+  {
+    component: SignOutPage,
+    pageTitle: "Sign Out",
+    path: "/sign-out",
     redirect: "/sign-in",
     _protected: true,
     onDrawer: true,

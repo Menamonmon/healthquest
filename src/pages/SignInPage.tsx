@@ -32,6 +32,12 @@ const SignInPage = () => {
                 title:
                   "An error occurred while signing in. Please try again later",
               });
+            } else {
+              toast({
+                status: "success",
+                title: "Signed In",
+                description: "Signed in successfully!",
+              });
             }
             off();
           }}
