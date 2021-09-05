@@ -45,9 +45,8 @@ const NavDrawerItem: React.FC<{ pageTitle: string; path: string }> = ({
 const Nav: React.FC<Props> = ({ routes }) => {
   const [currentPageTitle, setCurrentPageTitle] = useState("My Page");
   const [currentRoutes, setCurrentRoutes] = useState<NavRoute[]>([]);
+
   const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
-  console.log(routes);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -57,7 +56,9 @@ const Nav: React.FC<Props> = ({ routes }) => {
   history.listen((location) => {
     const pagePath = location.pathname;
     const matchingRoute = routes.find((r) => r.path === pagePath);
-    setCurrentPageTitle(matchingRoute ? matchingRoute.pageTitle : "");
+    setCurrentPageTitle(
+      matchingRoute ? matchingRoute.pageTitle : "INVALID PAGE"
+    );
   });
 
   useEffect(() => {

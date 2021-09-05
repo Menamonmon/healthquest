@@ -20,7 +20,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   auth.onAuthStateChanged((user) => {
-    console.log("CHANGED");
     setUser(user);
   });
   return (
