@@ -67,7 +67,7 @@ const Nav: React.FC<Props> = ({ routes }) => {
     setCurrentPageTitle(
       matchingRoute ? matchingRoute.pageTitle : "INVALID PAGE"
     );
-  }, []);
+  }, [routes, history]);
 
   useEffect(() => {
     setCurrentRoutes(
