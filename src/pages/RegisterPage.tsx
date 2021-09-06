@@ -13,21 +13,23 @@ const RegisterPage = () => {
   const toast = useToast();
 
   const handleSubmit: React.FormEventHandler<HTMLDivElement> = async (e) => {
-    // on();
-    // const result = false;
-    // if (!result) {
-    //   toast({
-    //     status: "error",
-    //     title: "An error occurred while signing in. Please try again later",
-    //   });
-    // } else {
-    //   toast({
-    //     status: "success",
-    //     title: "Signed In",
-    //     description: "Signed in successfully!",
-    //   });
-    // }
-    // off();
+    if (false) {
+      on();
+      const result = false;
+      if (!result) {
+        toast({
+          status: "error",
+          title: "An error occurred while signing in. Please try again later",
+        });
+      } else {
+        toast({
+          status: "success",
+          title: "Signed In",
+          description: "Signed in successfully!",
+        });
+      }
+      off();
+    }
     e.preventDefault();
     return false;
   };
