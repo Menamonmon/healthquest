@@ -22,7 +22,7 @@ export type Reminder = {
   name: string;
   owner: string;
   point_value: number;
-  times: Date[];
+  times: Timestamp[];
   type: ReminderType;
 };
 
