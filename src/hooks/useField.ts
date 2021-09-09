@@ -4,12 +4,11 @@ type ChngEvntHandler = React.ChangeEventHandler<
   HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 >;
 
-const useField: (initValue: string) => [string, ChngEvntHandler] = (
-  initValue: string
-) => {
-  const [value, setValue] = useState(initValue);
-  const handleChange: ChngEvntHandler = (e) => setValue(e.target?.value);
-  return [value, handleChange];
+const useField = <T extends string>(initValue: T) => {
+  const [value, setValue] = useState<T>(initValue);
+  const handleChange: ChngEvntHandler = (e) => setValue(e.target?.value as T);
+  const returnVal: [T, ChngEvntHandler] = [value, handleChange];
+  return returnVal;
 };
 
 export default useField;
