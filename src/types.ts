@@ -10,7 +10,15 @@ type NavRoute = {
   onDrawer?: boolean;
 };
 
-export type Day = "M" | "TU" | "W" | "TH" | "F" | "SA" | "SU";
+export enum Day {
+  "SUN",
+  "MON",
+  "TUE",
+  "WED",
+  "THU",
+  "FRI",
+  "SAT",
+}
 
 export type ReminderType = "MEDICINE" | "EXERCISE" | "METRICS" | "OTHER";
 
@@ -22,7 +30,7 @@ export type Reminder = {
   name: string;
   owner: string;
   point_value: number;
-  times: Timestamp[];
+  times: string[];
   type: ReminderType;
 };
 
