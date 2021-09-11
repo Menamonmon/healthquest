@@ -15,8 +15,8 @@ import React, { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
 interface Props {
-  selectedTimes: Date[];
-  setSelectedTimes: React.Dispatch<React.SetStateAction<Date[]>>;
+  selectedTimes: string[];
+  setSelectedTimes: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const TimesSelector: React.FC<Props> = ({
@@ -25,14 +25,14 @@ const TimesSelector: React.FC<Props> = ({
 }) => {
   const { onOpen, onClose, isOpen } = useDisclosure();
 
-  const [newTime, setNewTime] = useState<Date>(new Date(0));
+  const [newTime, setNewTime] = useState<string>("");
 
   return (
     <HStack flexWrap="wrap">
-      {selectedTimes.map((time) => (
-        <Popover>
+      {selectedTimes.map((time, idx) => (
+        <Popover key={idx}>
           <PopoverTrigger>
-            <Button size="xs">{`${time.getHours()}:${time.getMinutes()}`}</Button>
+            <Button size="xs">{time}</Button>
           </PopoverTrigger>
           <PopoverContent w="fit-conetent" colorScheme="red">
             <PopoverArrow />
@@ -69,14 +69,9 @@ const TimesSelector: React.FC<Props> = ({
               <Input
                 display="inline-block"
                 type="time"
-                value={`${newTime.getHours()}:${newTime.getMinutes()}`}
+                value={newTime}
                 onChange={(e) => {
-                  const timeString = e.target.value;
-                  const [hours, minutes] = timeString.split(":");
-                  const updatedDate = new Date(0);
-                  updatedDate.setHours(parseInt(hours));
-                  updatedDate.setMinutes(parseInt(minutes));
-                  setNewTime(updatedDate);
+                  setNewTime(e.target.value);
                 }}
               />
               <ButtonGroup>
@@ -86,12 +81,9 @@ const TimesSelector: React.FC<Props> = ({
                 <Button
                   size="sm"
                   onClick={() => {
-                    if (newTime.getTime() === new Date(0).getTime()) {
-                      return;
-                    }
                     setSelectedTimes((old) => {
                       const newTimes = old.concat(newTime);
-                      setNewTime(new Date(0));
+                      setNewTime("");
                       return newTimes;
                     });
                   }}
