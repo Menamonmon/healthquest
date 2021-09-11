@@ -109,15 +109,17 @@ const Nav: React.FC<Props> = ({ routes }) => {
       </Flex>
       <Box w="100vw" h="calc(100vh - 60px)" p="5px">
         <Switch>
-          {routes.map(({ _protected, unprotected, pageTitle, ...rest }) => {
-            if (_protected) {
-              return <ProtectedRoute exact strict {...rest} />;
-            } else if (unprotected) {
-              return <UnprotectedRoute exact strict {...rest} />;
-            } else {
-              return <Route exact strict {...rest} />;
+          {routes.map(
+            ({ _protected, unprotected, pageTitle, ...rest }, idx) => {
+              if (_protected) {
+                return <ProtectedRoute exact strict {...rest} key={idx} />;
+              } else if (unprotected) {
+                return <UnprotectedRoute exact strict {...rest} key={idx} />;
+              } else {
+                return <Route exact strict {...rest} key={idx} />;
+              }
             }
-          })}
+          )}
         </Switch>
       </Box>
       <Drawer
@@ -132,8 +134,8 @@ const Nav: React.FC<Props> = ({ routes }) => {
           <DrawerHeader>CAC App</DrawerHeader>
           <DrawerBody>
             <List onClick={onClose}>
-              {currentRoutes.map(({ pageTitle, path }) => (
-                <NavDrawerItem pageTitle={pageTitle} path={path} />
+              {currentRoutes.map(({ pageTitle, path }, idx) => (
+                <NavDrawerItem pageTitle={pageTitle} path={path} key={idx} />
               ))}
             </List>
           </DrawerBody>
