@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { HStack } from "@chakra-ui/layout";
 import React from "react";
 import { Day } from "../types";
+import { getEnumValues } from "../utils";
 
 interface Props {
   selectedDays: Day[];
@@ -9,10 +10,10 @@ interface Props {
 }
 
 const DaysSelector: React.FC<Props> = ({ selectedDays, setSelectedDays }) => {
-  const days: Day[] = ["SU", "M", "TU", "W", "TH", "F", "SA"];
+  const days = getEnumValues(Day) as unknown[] as Day[];
   return (
     <HStack>
-      {days.map((d) => (
+      {days.map((d, idx) => (
         <Button
           rounded="full"
           colorScheme={selectedDays.includes(d) ? "blue" : "gray"}
@@ -23,6 +24,7 @@ const DaysSelector: React.FC<Props> = ({ selectedDays, setSelectedDays }) => {
                 : prevDays.concat(d)
             )
           }
+          key={idx}
         >
           {d}
         </Button>
