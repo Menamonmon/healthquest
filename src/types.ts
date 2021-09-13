@@ -32,6 +32,7 @@ export type Reminder = {
   point_value: number;
   times: string[];
   type: ReminderType;
+  nextAlarm?: Date;
 };
 
 export type { NavRoute };

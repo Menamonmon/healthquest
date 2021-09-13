@@ -1,46 +1,45 @@
-import { Button } from "@chakra-ui/button";
-import { Heading, HStack, ListItem, VStack } from "@chakra-ui/layout";
+import { IconButton } from "@chakra-ui/button";
+import { Heading, HStack, ListItem, Text, VStack } from "@chakra-ui/layout";
 import React from "react";
 import { Reminder } from "../types";
-import { createCron, getNextAlarmTime } from "../utils";
 import TimeAgo from "react-timeago";
+import { FaPen, FaTrash } from "react-icons/fa";
 
 interface Props {
   reminder: Reminder;
 }
 const ReminderItem: React.FC<Props> = ({ reminder }) => {
-  const { name, times, days, start_date, end_date } = reminder;
-  const cron = createCron(days, times);
-  const nextDate = getNextAlarmTime(
-    cron,
-    times,
-    start_date.toDate(),
-    end_date.toDate()
-  );
-  const isThereNextDate = nextDate.getTime() !== new Date(0).getTime();
+  const { name, nextAlarm } = reminder;
 
   return (
     <ListItem
       as={HStack}
       justifyContent="space-between"
-      my="3px"
+      my="8px"
       bgColor="gray.200"
-      py="10px"
-      px="5px"
+      p="10px"
+      rounded="md"
+      boxShadow="md"
     >
-      <VStack>
+      <VStack alignItems="flex-start" textAlign="left">
         <Heading size="sm">{name}</Heading>
-        {isThereNextDate ? (
-          <>
-            Next Alarm: <TimeAgo date={nextDate} />
-          </>
-        ) : (
-          "Alarm Ended"
-        )}
+        <Text color="crimson">
+          {nextAlarm ? (
+            <>
+              <TimeAgo date={nextAlarm} />
+            </>
+          ) : (
+            "Alarm Ended"
+          )}
+        </Text>
       </VStack>
       <HStack>
-        <Button colorScheme="green">Details</Button>
-        <Button colorScheme="blue">Edit</Button>
+        <IconButton colorScheme="red" rounded="full" aria-label="Delete">
+          <FaTrash />
+        </IconButton>
+        <IconButton colorScheme="blue" rounded="full" aria-label="edit">
+          <FaPen />
+        </IconButton>
       </HStack>
     </ListItem>
   );

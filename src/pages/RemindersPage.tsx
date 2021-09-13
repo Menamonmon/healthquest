@@ -6,13 +6,28 @@ import ReminderItem from "../components/ReminderItem";
 import { getMyReminders } from "../services/firebase";
 import { Reminder } from "../types";
 import { Link as RouterLink } from "react-router-dom";
+import { createCron, getNextAlarmTime } from "../utils";
 
 const RemindersPage = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
   const fetchReminders = async () => {
     const myReminders = await getMyReminders();
-    setReminders(myReminders);
+
+    setReminders(
+      myReminders.map((reminder) => {
+        const { times, days, start_date, end_date } = reminder;
+        const cron = createCron(days, times);
+        const nextAlarm = getNextAlarmTime(
+          cron,
+          times,
+          start_date.toDate(),
+          end_date.toDate()
+        );
+        reminder.nextAlarm = nextAlarm;
+        return reminder;
+      })
+    );
   };
 
   useEffect(() => {
