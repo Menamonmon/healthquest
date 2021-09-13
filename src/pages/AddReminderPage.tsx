@@ -14,7 +14,7 @@ import TimesSelector from "../components/TimesSelector";
 import useField from "../hooks/useField";
 import { addReminder } from "../services/firebase";
 import { Day, ReminderType } from "../types";
-import { dateStringToDate, toTimestamp } from "../utils";
+import { dateStringToDate, isDateStringValid, toTimestamp } from "../utils";
 
 const AddReminderPage = () => {
   const history = useHistory();
@@ -25,6 +25,24 @@ const AddReminderPage = () => {
   const handleSubmit: FormEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
     on();
+    
+    // validating the input
+    if (
+      selectedTimes.length === 0 ||
+      selectedDays.length === 0 ||
+      !isDateStringValid(startDate) ||
+      !isDateStringValid(endDate) ||
+      new Date(startDate).getTime() > new Date(endDate).getTime()
+    ) {
+      toast({
+        status: "error",
+        title: "Invalid Input",
+        description:
+          "Make sure the end, and start dates are valid, and you have selected times and days for your reminder.",
+        isClosable: true,
+      });
+      return false;
+    }
     const added = await addReminder({
       name,
       description,
