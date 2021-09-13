@@ -23,6 +23,7 @@ export enum Day {
 export type ReminderType = "MEDICINE" | "EXERCISE" | "METRICS" | "OTHER";
 
 export type Reminder = {
+  id?: string;
   days: Day[];
   description: string;
   end_date: Timestamp;
