@@ -82,6 +82,6 @@ export const getNextAlarmTime = (
 };
 
 export const isDateStringValid = (dateString: string): boolean => {
-  const d = new Date(dateString);
-  return isNaN(d.getTime());
+  const d = dateStringToDate(dateString);
+  return !isNaN(d.getTime());
 };
