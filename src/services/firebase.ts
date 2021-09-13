@@ -8,6 +8,8 @@ import {
   query,
   getDocs,
   addDoc,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import { Reminder } from "../types";
 
@@ -40,7 +42,11 @@ const getMyReminders: () => Promise<Reminder[]> = async () => {
   const remindersRef = collection(db, "reminders");
   const q = query(remindersRef, where("owner", "==", auth?.currentUser?.uid));
   const querySnapshot = await getDocs(q);
-  const docsData = querySnapshot.docs.map((doc) => doc.data());
+  const docsData = querySnapshot.docs.map((doc) => {
+    const document = doc.data();
+    document.id = doc.id;
+    return document;
+  });
   return docsData as Reminder[];
 };
 
@@ -63,4 +69,13 @@ const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
     }
   };
 
-export { auth, signInWithGoogle, getMyReminders, addReminder };
+const deleteReminder = async (reminderId: string): Promise<boolean> => {
+  try {
+    await deleteDoc(doc(db, "reminders", reminderId));
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+export { auth, signInWithGoogle, getMyReminders, addReminder, deleteReminder };
