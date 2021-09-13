@@ -22,17 +22,28 @@ const AddReminderPage = () => {
   const toast = useToast();
   const [loading, { on, off }] = useBoolean();
 
+  const clearFields = () => {
+    setSelectedTimes([]);
+    setSelectedDays([]);
+    setName("");
+    setDescription("");
+    setReminderType("OTHER");
+    setEndDate("");
+    setStartDate("");
+  };
+
   const handleSubmit: FormEventHandler<HTMLDivElement> = async (e) => {
     e.preventDefault();
     on();
-    
+
     // validating the input
     if (
       selectedTimes.length === 0 ||
       selectedDays.length === 0 ||
       !isDateStringValid(startDate) ||
       !isDateStringValid(endDate) ||
-      new Date(startDate).getTime() > new Date(endDate).getTime()
+      dateStringToDate(startDate).getTime() >
+        dateStringToDate(endDate).getTime()
     ) {
       toast({
         status: "error",
@@ -60,6 +71,7 @@ const AddReminderPage = () => {
         description: "Reminder added successfully!",
         isClosable: true,
       });
+      clearFields();
     } else {
       toast({
         status: "error",
@@ -75,11 +87,11 @@ const AddReminderPage = () => {
 
   const [selectedDays, setSelectedDays] = useState<Day[]>([]);
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
-  const [startDate, handleStartDateChange] = useField("2021-09-01");
-  const [endDate, handleEndDateChange] = useField("2021-10-01");
-  const [name, handleNameChange] = useField("NAME");
-  const [description, handleDescriptionChange] = useField("DESCRIPTIOn");
-  const [reminderType, handleReminderTypeChange] =
+  const [startDate, handleStartDateChange, setStartDate] = useField("");
+  const [endDate, handleEndDateChange, setEndDate] = useField("");
+  const [name, handleNameChange, setName] = useField("");
+  const [description, handleDescriptionChange, setDescription] = useField("");
+  const [reminderType, handleReminderTypeChange, setReminderType] =
     useField<ReminderType>("OTHER");
 
   return (
