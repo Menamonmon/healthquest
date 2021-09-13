@@ -7,8 +7,12 @@ import { FaPen, FaTrash } from "react-icons/fa";
 
 interface Props {
   reminder: Reminder;
+  setReminderToBeDeleted: React.Dispatch<React.SetStateAction<Reminder | null>>;
 }
-const ReminderItem: React.FC<Props> = ({ reminder }) => {
+const ReminderItem: React.FC<Props> = ({
+  reminder,
+  setReminderToBeDeleted,
+}) => {
   const { name, nextAlarm } = reminder;
 
   return (
@@ -34,7 +38,12 @@ const ReminderItem: React.FC<Props> = ({ reminder }) => {
         </Text>
       </VStack>
       <HStack>
-        <IconButton colorScheme="red" rounded="full" aria-label="Delete">
+        <IconButton
+          colorScheme="red"
+          rounded="full"
+          aria-label="delete"
+          onClick={() => setReminderToBeDeleted(reminder)}
+        >
           <FaTrash />
         </IconButton>
         <IconButton colorScheme="blue" rounded="full" aria-label="edit">
