@@ -4,6 +4,7 @@ import React from "react";
 import { Reminder } from "../types";
 import TimeAgo from "react-timeago";
 import { FaPen, FaTrash } from "react-icons/fa";
+import { useHistory } from "react-router";
 
 interface Props {
   reminder: Reminder;
@@ -13,7 +14,8 @@ const ReminderItem: React.FC<Props> = ({
   reminder,
   setReminderToBeDeleted,
 }) => {
-  const { name, nextAlarm } = reminder;
+  const { name, nextAlarm, id } = reminder;
+  const history = useHistory();
 
   return (
     <ListItem
@@ -46,7 +48,14 @@ const ReminderItem: React.FC<Props> = ({
         >
           <FaTrash />
         </IconButton>
-        <IconButton colorScheme="blue" rounded="full" aria-label="edit">
+        <IconButton
+          colorScheme="blue"
+          rounded="full"
+          aria-label="edit"
+          onClick={() => {
+            history.push(`/edit-reminder?reminder_id=${id}`);
+          }}
+        >
           <FaPen />
         </IconButton>
       </HStack>
