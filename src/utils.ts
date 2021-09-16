@@ -85,3 +85,12 @@ export const isDateStringValid = (dateString: string): boolean => {
   const d = dateStringToDate(dateString);
   return !isNaN(d.getTime());
 };
+
+export const getReminderIdFromUrl = (reminderParamName?: string): string => {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const result = urlParams.get(
+    reminderParamName ? reminderParamName : "reminder_id"
+  );
+  return result ? result : "";
+};
