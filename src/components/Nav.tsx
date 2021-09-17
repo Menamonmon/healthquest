@@ -131,7 +131,7 @@ const Nav: React.FC<Props> = ({ routes }) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>CAC App</DrawerHeader>
+          <DrawerHeader>HealthQuest</DrawerHeader>
           <DrawerBody>
             <List onClick={onClose}>
               {currentRoutes.map(({ pageTitle, path }, idx) => (
