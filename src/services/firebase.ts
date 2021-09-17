@@ -6,9 +6,11 @@ import {
   getFirestore,
   where,
   query,
+  getDoc,
   getDocs,
   addDoc,
   deleteDoc,
+  setDoc,
   doc,
 } from "firebase/firestore";
 import { Reminder } from "../types";
@@ -69,6 +71,34 @@ const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
     }
   };
 
+const updateReminder = async (
+  reminderId: string,
+  reminder: Omit<Reminder, "owner">
+) => {
+  if (!auth.currentUser) {
+    return false;
+  }
+  const reminderRef = doc(db, "reminders", reminderId);
+  try {
+    await setDoc(reminderRef, { ...reminder, owner: auth?.currentUser?.uid });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+const getReminder = async (reminderId: string): Promise<Reminder | null> => {
+  const reminderRef = doc(db, "reminders", reminderId);
+  try {
+    const doc = await getDoc(reminderRef);
+    const data = doc.data();
+    return data as Reminder;
+  } catch (err) {
+    return null;
+  }
+};
+
 const deleteReminder = async (reminderId: string): Promise<boolean> => {
   try {
     await deleteDoc(doc(db, "reminders", reminderId));
@@ -78,4 +108,12 @@ const deleteReminder = async (reminderId: string): Promise<boolean> => {
     return false;
   }
 };
-export { auth, signInWithGoogle, getMyReminders, addReminder, deleteReminder };
+export {
+  auth,
+  signInWithGoogle,
+  getMyReminders,
+  addReminder,
+  deleteReminder,
+  updateReminder,
+  getReminder,
+};
