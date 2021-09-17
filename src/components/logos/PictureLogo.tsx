@@ -2,7 +2,7 @@ import React from "react";
 
 const PictureLogo = () => {
   return (
-    <svg viewBox="0 0 247.6589855888589 66.54079601352757">
+    <svg>
       <rect fill="none"></rect>
       <g
         id="SvgjsG2853"
