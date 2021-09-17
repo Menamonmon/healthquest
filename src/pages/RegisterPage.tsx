@@ -1,12 +1,12 @@
-import { Avatar } from "@chakra-ui/avatar";
 import { Button } from "@chakra-ui/button";
 import { useBoolean } from "@chakra-ui/hooks";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
-import { Heading, Link, VStack } from "@chakra-ui/layout";
+import { Box, Heading, Link, VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
 import React from "react";
 import { FaGoogle, FaPhoneAlt } from "react-icons/fa";
 import { Link as RouterLink } from "react-router-dom";
+import PictureLogo from "../components/logos/PictureLogo";
 
 const RegisterPage = () => {
   const [loading, { on, off }] = useBoolean();
@@ -37,7 +37,16 @@ const RegisterPage = () => {
   return (
     <VStack justifyContent="center" height="100%">
       <VStack height="50vh" justifyContent="space-between">
-        <Avatar src="" name="CACAPP" size="xl" />
+        <Box
+          w="100px"
+          h="100px"
+          p="12px"
+          pt="20px"
+          bgColor="blue.900"
+          rounded="full"
+        >
+          <PictureLogo />
+        </Box>
         <Heading>Register</Heading>
         <VStack
           as="form"
