@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+    	return request.auth != null;
+    }
+    
+    function isOwnerOfReminder() {
+    	return resource.data.owner == request.auth.uid;
+    }
+    
+    match /reminders/{reminderID} {
+    	allow read: if isSignedIn() && isOwnerOfReminder();
+      allow update: if isSignedIn() && isOwnerOfReminder();
+      allow delete: if isSignedIn() && isOwnerOfReminder();
+      allow create: if isSignedIn();
+    }
+  }
+}
