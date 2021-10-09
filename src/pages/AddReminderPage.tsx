@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from "@chakra-ui/button";
+import { Button } from "@chakra-ui/button";
 import { FormControl } from "@chakra-ui/form-control";
 import { useBoolean } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
@@ -7,8 +7,8 @@ import { Select } from "@chakra-ui/select";
 import { Textarea } from "@chakra-ui/textarea";
 import { useToast } from "@chakra-ui/toast";
 import React, { FormEventHandler, useState } from "react";
-import { FaArrowLeft, FaCheck } from "react-icons/fa";
-import { useHistory } from "react-router";
+import { FaCheck } from "react-icons/fa";
+import { BackFooter } from "../components/BackFooter";
 import DaysSelector from "../components/DaysSelector";
 import TimesSelector from "../components/TimesSelector";
 import useField from "../hooks/useField";
@@ -17,8 +17,6 @@ import { Day, ReminderType } from "../types";
 import { dateStringToDate, isDateStringValid, toTimestamp } from "../utils";
 
 const AddReminderPage = () => {
-  const history = useHistory();
-
   const toast = useToast();
   const [loading, { on, off }] = useBoolean();
 
@@ -186,22 +184,16 @@ const AddReminderPage = () => {
             <option value="OTHER">Other</option>
           </Select>
         </VStack>
-        <ButtonGroup
-          alignSelf="flex-end"
-          disabled={loading}
-          justifySelf="flex-end"
-        >
+        <BackFooter>
           <Button
-            colorScheme="blackAlpha"
-            leftIcon={<FaArrowLeft />}
-            onClick={() => history.goBack()}
+            colorScheme="green"
+            disabled={loading}
+            leftIcon={<FaCheck />}
+            type="submit"
           >
-            Back
-          </Button>
-          <Button colorScheme="green" leftIcon={<FaCheck />} type="submit">
             Save
           </Button>
-        </ButtonGroup>
+        </BackFooter>
       </FormControl>
     </VStack>
   );

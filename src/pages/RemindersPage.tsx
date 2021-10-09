@@ -1,5 +1,5 @@
 import { Button, IconButton } from "@chakra-ui/button";
-import { Box, List } from "@chakra-ui/layout";
+import { Box, Flex, List } from "@chakra-ui/layout";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import ReminderItem from "../components/ReminderItem";
@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/modal";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { useToast, Heading } from "@chakra-ui/react";
+import { BackFooter } from "../components/BackFooter";
 
 const RemindersPage = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
@@ -61,86 +62,87 @@ const RemindersPage = () => {
   }, [reminderToBeDeleted, onOpen, onDisclosureClose]);
 
   return (
-    <Box>
-      {reminders.length === 0 ? (
-        <>
-          <Heading>No Reminders To Display</Heading>
-          <Heading size="sm">
-            You can add reminders by clicking the plus button at the bottom of
-            the screen.
-          </Heading>
-        </>
-      ) : (
-        <>
-          <List>
-            {reminders.map((reminder, idx) => (
-              <ReminderItem
-                reminder={reminder}
-                setReminderToBeDeleted={setReminderToBeDeleted}
-                key={idx}
-              />
-            ))}
-          </List>
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Deleting A Reminder:</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                Do you really want to delete "{reminderToBeDeleted?.name}"?
-              </ModalBody>
-              <ModalFooter>
-                <Button colorScheme="blackAlpha" mr={3} onClick={onClose}>
-                  No
-                </Button>
-                <Button
-                  colorScheme="red"
-                  onClick={async () => {
-                    const deleted =
-                      reminderToBeDeleted?.id !== undefined
-                        ? await deleteReminder(reminderToBeDeleted?.id)
-                        : false;
-                    if (deleted) {
-                      toast({
-                        status: "success",
-                        title: "Deleted",
-                        description: "Reminder deleted successfully!",
-                        isClosable: true,
-                      });
-                    } else {
-                      toast({
-                        status: "error",
-                        title: "Error",
-                        description:
-                          "An error ocurred while deleting your reminder please try again later!",
-                        isClosable: true,
-                      });
-                    }
-                    await fetchReminders();
-                    onClose();
-                  }}
-                >
-                  Yes
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-        </>
-      )}
-      <IconButton
-        size="lg"
-        colorScheme="green"
-        rounded="full"
-        position="absolute"
-        bottom="5%"
-        right="5%"
-        aria-label="add-reminder"
-        as={RouterLink}
-        to="/add-reminder"
-      >
-        <FaPlus></FaPlus>
-      </IconButton>
-    </Box>
+    <Flex flexDir="column" justifyContent="space-between" height="100%">
+      <Box flexGrow={1}>
+        {reminders.length === 0 ? (
+          <>
+            <Heading>No Reminders To Display</Heading>
+            <Heading size="sm">
+              You can add reminders by clicking the plus button at the bottom of
+              the screen.
+            </Heading>
+          </>
+        ) : (
+          <>
+            <List>
+              {reminders.map((reminder, idx) => (
+                <ReminderItem
+                  reminder={reminder}
+                  setReminderToBeDeleted={setReminderToBeDeleted}
+                  key={idx}
+                />
+              ))}
+            </List>
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Deleting A Reminder:</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  Do you really want to delete "{reminderToBeDeleted?.name}"?
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="blackAlpha" mr={3} onClick={onClose}>
+                    No
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={async () => {
+                      const deleted =
+                        reminderToBeDeleted?.id !== undefined
+                          ? await deleteReminder(reminderToBeDeleted?.id)
+                          : false;
+                      if (deleted) {
+                        toast({
+                          status: "success",
+                          title: "Deleted",
+                          description: "Reminder deleted successfully!",
+                          isClosable: true,
+                        });
+                      } else {
+                        toast({
+                          status: "error",
+                          title: "Error",
+                          description:
+                            "An error ocurred while deleting your reminder please try again later!",
+                          isClosable: true,
+                        });
+                      }
+                      await fetchReminders();
+                      onClose();
+                    }}
+                  >
+                    Yes
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </>
+        )}
+      </Box>
+      <BackFooter>
+        <IconButton
+          size="lg"
+          colorScheme="green"
+          rounded="full"
+          aria-label="add-reminder"
+          as={RouterLink}
+          to="/add-reminder"
+        >
+          <FaPlus></FaPlus>
+        </IconButton>
+      </BackFooter>
+    </Flex>
   );
 };
 
