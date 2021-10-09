@@ -13,7 +13,7 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { Reminder } from "../types";
+import { Reminder, UserProfile } from "../types";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -108,6 +108,18 @@ const deleteReminder = async (reminderId: string): Promise<boolean> => {
     return false;
   }
 };
+
+const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+  try {
+    const userProfDoc = await getDoc(doc(db, "user_profiles", uid));
+    const userProfile = userProfDoc.data() as UserProfile;
+    return userProfile;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
 export {
   auth,
   signInWithGoogle,
@@ -116,4 +128,5 @@ export {
   deleteReminder,
   updateReminder,
   getReminder,
+  getUserProfile,
 };
