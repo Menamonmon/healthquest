@@ -37,3 +37,11 @@ export type Reminder = {
 };
 
 export type { NavRoute };
+
+export type UserType = "PATIENT" | "DOCTOR";
+
+export type UserProfile = {
+  points: number;
+  user_type: UserType;
+  uid: string;
+};
