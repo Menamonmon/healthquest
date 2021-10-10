@@ -29,7 +29,7 @@ initializeApp(firebaseConfig);
 const auth = getAuth();
 const db = getFirestore();
 
-const signInWithGoogle = async () => {
+export const signInWithGoogle = async () => {
   try {
     const googleAuthProvider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, googleAuthProvider);
@@ -40,7 +40,7 @@ const signInWithGoogle = async () => {
   }
 };
 
-const getMyReminders: () => Promise<Reminder[]> = async () => {
+export const getMyReminders: () => Promise<Reminder[]> = async () => {
   const remindersRef = collection(db, "reminders");
   const q = query(remindersRef, where("owner", "==", auth?.currentUser?.uid));
   const querySnapshot = await getDocs(q);
@@ -52,7 +52,7 @@ const getMyReminders: () => Promise<Reminder[]> = async () => {
   return docsData as Reminder[];
 };
 
-const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
+export const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
   async (reminder) => {
     if (!auth.currentUser) {
       return false;
@@ -71,7 +71,7 @@ const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
     }
   };
 
-const updateReminder = async (
+export const updateReminder = async (
   reminderId: string,
   reminder: Omit<Reminder, "owner">
 ) => {
@@ -88,7 +88,7 @@ const updateReminder = async (
   }
 };
 
-const getReminder = async (reminderId: string): Promise<Reminder | null> => {
+export const getReminder = async (reminderId: string): Promise<Reminder | null> => {
   const reminderRef = doc(db, "reminders", reminderId);
   try {
     const doc = await getDoc(reminderRef);
@@ -99,7 +99,7 @@ const getReminder = async (reminderId: string): Promise<Reminder | null> => {
   }
 };
 
-const deleteReminder = async (reminderId: string): Promise<boolean> => {
+export const deleteReminder = async (reminderId: string): Promise<boolean> => {
   try {
     await deleteDoc(doc(db, "reminders", reminderId));
     return true;
@@ -109,7 +109,7 @@ const deleteReminder = async (reminderId: string): Promise<boolean> => {
   }
 };
 
-const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
   try {
     const userProfDoc = await getDoc(doc(db, "user_profiles", uid));
     const userProfile = userProfDoc.data() as UserProfile;
@@ -122,11 +122,4 @@ const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
 
 export {
   auth,
-  signInWithGoogle,
-  getMyReminders,
-  addReminder,
-  deleteReminder,
-  updateReminder,
-  getReminder,
-  getUserProfile,
 };
