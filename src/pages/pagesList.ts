@@ -10,6 +10,7 @@ import RemindersPage from "./RemindersPage";
 import RewardsPage from "./RewardsPage";
 import SignInPage from "./SignInPage";
 import SignOutPage from "./SignOutPage";
+import InsuranceCardPage from "./InsuranceCardPage";
 
 const pagesList: NavRoute[] = [
   {
@@ -33,6 +34,14 @@ const pagesList: NavRoute[] = [
     pageTitle: "My Reminders",
     path: "/reminders",
     redirect: "/sign-in",
+    _protected: true,
+    onDrawer: true,
+  },
+  {
+    component: InsuranceCardPage,
+    pageTitle: "Insurance Card",
+    path: "/insurance-card",
+    redirect: "/",
     _protected: true,
     onDrawer: true,
   },
