@@ -14,6 +14,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { Reminder, UserProfile } from "../types";
+import { createCron, getNextAlarmTime } from "../utils";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -52,24 +53,63 @@ export const getMyReminders: () => Promise<Reminder[]> = async () => {
   return docsData as Reminder[];
 };
 
-export const addReminder: (reminder: Omit<Reminder, "owner">) => Promise<boolean> =
-  async (reminder) => {
-    if (!auth.currentUser) {
-      return false;
-    }
+export const getLatestReminders: (limit: number) => Promise<Reminder[]> =
+  async (limit) => {
     const remindersRef = collection(db, "reminders");
-    const newReminder: Reminder = {
-      ...reminder,
-      owner: auth?.currentUser?.uid,
-    };
-    try {
-      await addDoc(remindersRef, newReminder);
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+    const q = query(remindersRef, where("owner", "==", auth?.currentUser?.uid));
+    const querySnapshot = await getDocs(q);
+    const docsData = querySnapshot.docs.map((doc) => {
+      const document = doc.data();
+      document.id = doc.id;
+      return document;
+    });
+    const remindersList = docsData as Reminder[];
+
+    // sorting reminders by next alarm values
+    const sortedReminders = remindersList
+      .map((r) => {
+        const { days, times, start_date, end_date } = r;
+        const cron = createCron(days, times);
+        r.nextAlarm = getNextAlarmTime(
+          cron,
+          times,
+          start_date.toDate(),
+          end_date.toDate()
+        );
+        return r;
+      })
+      .sort((a, b) =>
+        a.nextAlarm && b.nextAlarm
+          ? new Date(a.nextAlarm).getTime() - new Date(b.nextAlarm).getTime()
+          : 0
+      );
+
+    const final =
+      limit > sortedReminders.length
+        ? sortedReminders
+        : sortedReminders.slice(0, limit);
+    return final;
   };
+
+export const addReminder: (
+  reminder: Omit<Reminder, "owner">
+) => Promise<boolean> = async (reminder) => {
+  if (!auth.currentUser) {
+    return false;
+  }
+  const remindersRef = collection(db, "reminders");
+  const newReminder: Reminder = {
+    ...reminder,
+    owner: auth?.currentUser?.uid,
+  };
+  try {
+    await addDoc(remindersRef, newReminder);
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
 
 export const updateReminder = async (
   reminderId: string,
@@ -88,7 +128,9 @@ export const updateReminder = async (
   }
 };
 
-export const getReminder = async (reminderId: string): Promise<Reminder | null> => {
+export const getReminder = async (
+  reminderId: string
+): Promise<Reminder | null> => {
   const reminderRef = doc(db, "reminders", reminderId);
   try {
     const doc = await getDoc(reminderRef);
@@ -109,7 +151,9 @@ export const deleteReminder = async (reminderId: string): Promise<boolean> => {
   }
 };
 
-export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+export const getUserProfile = async (
+  uid: string
+): Promise<UserProfile | null> => {
   try {
     const userProfDoc = await getDoc(doc(db, "user_profiles", uid));
     const userProfile = userProfDoc.data() as UserProfile;
@@ -120,6 +164,4 @@ export const getUserProfile = async (uid: string): Promise<UserProfile | null> =
   }
 };
 
-export {
-  auth,
-};
+export { auth };
