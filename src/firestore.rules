@@ -9,11 +9,24 @@ service cloud.firestore {
     	return resource.data.owner == request.auth.uid;
     }
     
+    function isOwnerOfUserProfile() {
+    	return resource.data.uid == request.auth.uid;
+    }
+    
+    match /users/{uid} {
+    	allow read;
+    }
+    
     match /reminders/{reminderID} {
     	allow read: if isSignedIn() && isOwnerOfReminder();
       allow update: if isSignedIn() && isOwnerOfReminder();
       allow delete: if isSignedIn() && isOwnerOfReminder();
       allow create: if isSignedIn();
+    }
+    
+    match /user_profiles/{userProfile} {
+    	allow read: if isSignedIn() && isOwnerOfUserProfile();
+    	allow write: if isSignedIn() && isOwnerOfUserProfile();
     }
   }
 }
