@@ -1,6 +1,7 @@
 import { NavRoute } from "../types";
 import AddReminderPage from "./AddReminderPage";
 import ChatPage from "./ChatPage";
+import ChatConversationPage from "./ChatConversationPage";
 import EditReminderPage from "./EditReminderPage";
 import PatientHomePage from "./PatientHomePage";
 import PatientReportPage from "./PatientReportPage";
@@ -56,6 +57,13 @@ const pagesList: NavRoute[] = [
     component: EditReminderPage,
     pageTitle: "Edit Reminder",
     path: "/edit-reminder",
+    redirect: "/sign-in",
+    _protected: true,
+  },
+  {
+    component: ChatConversationPage,
+    pageTitle: "Chat Conversation",
+    path: "/chat-conversation",
     redirect: "/sign-in",
     _protected: true,
   },
