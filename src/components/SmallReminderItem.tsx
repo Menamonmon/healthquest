@@ -1,4 +1,4 @@
-import { Heading, HStack, ListItem, Text, VStack } from "@chakra-ui/layout";
+import { Heading, HStack, ListItem, Text } from "@chakra-ui/layout";
 import TimeAgo from "react-timeago";
 import React from "react";
 import { Reminder } from "../types";

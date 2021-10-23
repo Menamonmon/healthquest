@@ -1,7 +1,6 @@
 import { Box, Flex, List, Heading } from "@chakra-ui/layout";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { firestore, getChatConversationInfo } from "../services/firebase";
-import { ChatConversationInfo } from "../types";
+import React, { useCallback, useEffect, useRef } from "react";
+import { firestore } from "../services/firebase";
 import { getParamFromUrl } from "../utils";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "../components/ChatMessage";
@@ -10,19 +9,12 @@ import { BackFooter } from "../components/BackFooter";
 
 const ChatConversationPage: React.FC = () => {
   const convId = getParamFromUrl("conversation_id");
-  const [convInfo, setConvInfo] = useState<ChatConversationInfo | null>(null);
   const messagesRef = firestore.collection("messages");
   const query = messagesRef
     .where("conv_id", "==", convId)
     .orderBy("created_at");
   const [messages] = useCollectionData(query, { idField: "id" });
 
-  const fetchConvInfo = useCallback(async () => {
-    if (convId.trim() !== "") {
-      const info = await getChatConversationInfo(convId);
-      setConvInfo(info);
-    }
-  }, [convId]);
   const feedRef: any = useRef<HTMLUListElement>();
   const scrollToBottom = useCallback(() => {
     if (feedRef.current) {
@@ -31,12 +23,8 @@ const ChatConversationPage: React.FC = () => {
   }, [feedRef]);
 
   useEffect(() => {
-    fetchConvInfo();
-  }, [fetchConvInfo]);
-
-  useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   return (
     <Flex flexDir="column" h="97%">
