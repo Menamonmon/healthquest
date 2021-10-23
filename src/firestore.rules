@@ -21,6 +21,11 @@ service cloud.firestore {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
     }
+
+    match /messages/{message} {
+      allow write: if isSignedIn();
+      allow read: if true;
+    }
     
     match /users/{uid} {
     	allow read;
