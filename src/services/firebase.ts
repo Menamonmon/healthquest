@@ -1,4 +1,9 @@
-import { ChatConversation, ChatConversationInfo } from "./../types";
+import { toTimestamp } from "./../utils";
+import {
+  ChatConversation,
+  ChatConversationInfo,
+  ChatMessageType,
+} from "./../types";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
@@ -14,6 +19,9 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+
 import {
   ChatConversationParticipantInfo,
   Reminder,
@@ -32,6 +40,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const firestore = firebase.firestore();
 const auth = getAuth();
 const db = getFirestore();
 
@@ -248,4 +258,37 @@ export const getChatConversationInfo = async (
   return null;
 };
 
-export { auth };
+export const getChatQuery = (convId: string) => {
+  const messagesRef = firestore.collection("messages");
+  const q = messagesRef.where("conv_id", "==", convId).orderBy("created_at");
+  return q;
+};
+
+export const sendMessage = async (
+  conv_id: string,
+  content: string
+): Promise<ChatMessageType | null> => {
+  if (auth.currentUser === null) {
+    return null;
+  }
+  const { displayName, photoURL, uid } = auth.currentUser;
+  if (!displayName || !photoURL) {
+    return null;
+  }
+  const msg = {
+    conv_id,
+    sender: { displayName, photoURL, uid },
+    created_at: toTimestamp(new Date()),
+    content,
+  };
+  const messagesRef = collection(db, "messages");
+  try {
+    await addDoc(messagesRef, msg);
+    return msg as ChatMessageType;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+export { auth, firestore };
