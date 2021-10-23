@@ -1,3 +1,4 @@
+import { ChatConversation, ChatConversationInfo } from "./../types";
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
@@ -13,7 +14,11 @@ import {
   setDoc,
   doc,
 } from "firebase/firestore";
-import { Reminder, UserProfile } from "../types";
+import {
+  ChatConversationParticipantInfo,
+  Reminder,
+  UserProfile,
+} from "../types";
 import { createCron, getNextAlarmTime } from "../utils";
 
 const firebaseConfig = {
@@ -162,6 +167,85 @@ export const getUserProfile = async (
     console.log(err);
     return null;
   }
+};
+
+export const getChatConversations = async (uid: string) => {
+  const conversationsRef = collection(db, "conversations");
+  try {
+    const convDocs = await getDocs(
+      query(conversationsRef, where("participants", "array-contains", uid))
+    );
+    const data = convDocs.docs.map((doc) => {
+      const document = doc.data();
+      document.id = doc.id;
+      return document;
+    }) as ChatConversation[];
+    return data;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+export const startConversation = async (
+  recepientEmail: string
+): Promise<ChatConversation | false> => {
+  if (auth.currentUser !== null) {
+    const uid = auth.currentUser.uid;
+    try {
+      const response = await fetch(
+        "https://us-central1-cacapp-76367.cloudfunctions.net/startConversation",
+        {
+          method: "POST",
+          body: JSON.stringify({ uid, email: recepientEmail }),
+        }
+      );
+      const data = await response.json();
+      return data.conversation as ChatConversation;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  }
+  return false;
+};
+
+export const getUserInfoById = async (uid: string) => {
+  try {
+    const response = await fetch(
+      "https://us-central1-cacapp-76367.cloudfunctions.net/getUserInfoById",
+      {
+        method: "POST",
+        body: JSON.stringify({ uid: uid }),
+      }
+    );
+    const data = await response.json();
+    return data as ChatConversationParticipantInfo;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+export const getChatConversationInfo = async (
+  conversationId: string
+): Promise<ChatConversationInfo | null> => {
+  const convRef = doc(db, "conversations", conversationId);
+  try {
+    const doc = await getDoc(convRef);
+    const data = doc.data();
+    if (data) {
+      data.id = conversationId;
+      const otherUserId = data.participants.filter(
+        (uid: string) => uid !== auth.currentUser?.uid
+      )[0];
+      data.otherUser = await getUserInfoById(otherUserId);
+      return data as ChatConversationInfo;
+    }
+  } catch (err) {
+    return null;
+  }
+  return null;
 };
 
 export { auth };
