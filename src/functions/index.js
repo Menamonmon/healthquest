@@ -159,7 +159,6 @@ exports.startConversation = functions.https.onRequest((req, res) => {
         ...conversationDoc.data(),
         id: conversationDoc.id,
       };
-      functions.logger.log(conversation);
       res.send({ status: "success", conversation: conversation });
       return;
     } catch (err) {
@@ -173,9 +172,7 @@ exports.getUserInfoById = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
       const { uid } = JSON.parse(req.body);
-      functions.logger.log(req);
       const { displayName, photoURL } = await admin.auth().getUser(uid);
-      functions.logger.log(displayName, photoURL);
       res.send({ displayName, photoURL });
     } catch (err) {
       functions.logger.log(err);
