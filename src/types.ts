@@ -56,3 +56,7 @@ export type ChatConversationParticipantInfo = {
   displayName: string;
   photoURL: string;
 };
+
+export type ChatConversationInfo = ChatConversation & {
+  otherUser: ChatConversationParticipantInfo;
+};
