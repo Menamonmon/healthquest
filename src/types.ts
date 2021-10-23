@@ -45,3 +45,14 @@ export type UserProfile = {
   user_type: UserType;
   uid: string;
 };
+
+export type ChatConversation = {
+  id: string;
+  participants: string[];
+  created_at: Timestamp;
+};
+
+export type ChatConversationParticipantInfo = {
+  displayName: string;
+  photoURL: string;
+};
