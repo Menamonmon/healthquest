@@ -56,7 +56,7 @@ export const getNextAlarmTime = (
   times: string[],
   start_date: Date,
   end_date: Date
-): Date => {
+): Date | undefined => {
   const meets = (cronDate: CronDate, times: string[]): boolean => {
     const options: Intl.DateTimeFormatOptions = {
       hour12: false,
@@ -70,7 +70,12 @@ export const getNextAlarmTime = (
     endDate: end_date,
     startDate: start_date,
   });
-  let nextDate = interval.next();
+  let nextDate;
+  try {
+    nextDate = interval.next();
+  } catch (err) {
+    return undefined;
+  }
   while (!meets(nextDate, times)) {
     try {
       nextDate = interval.next();
