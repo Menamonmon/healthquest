@@ -60,3 +60,11 @@ export type ChatConversationParticipantInfo = {
 export type ChatConversationInfo = ChatConversation & {
   otherUser: ChatConversationParticipantInfo;
 };
+
+export type ChatMessageType = {
+  sender: ChatConversationParticipantInfo & { uid: string };
+  created_at: Timestamp;
+  content: string;
+  conv_id: string;
+  id: string;
+};
