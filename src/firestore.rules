@@ -12,6 +12,15 @@ service cloud.firestore {
     function isOwnerOfUserProfile() {
     	return resource.data.uid == request.auth.uid;
     }
+
+    function isMemberOfConversation() {
+      return request.auth.uid in resource.data.participants; 
+    }
+
+    match /conversations/{convId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+    }
     
     match /users/{uid} {
     	allow read;
