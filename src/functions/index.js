@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const cronParser = require("cron-parser");
+const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 const firestore = admin.firestore();
@@ -137,3 +138,48 @@ async function schedulerHandler() {
 exports.remindersNotificationsScheduler = functions.pubsub
   .schedule("0 * * * *")
   .onRun(schedulerHandler);
+
+exports.startConversation = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { uid: starterUid, email: recepientEmail } = JSON.parse(req.body);
+      const { uid } = await admin.auth().getUserByEmail(recepientEmail);
+      if (uid === starterUid) {
+        res
+          .status(400)
+          .send({ status: "can't start a conversation with yourself" });
+        return;
+      }
+      const documentRef = await firestore.collection("conversations").add({
+        participants: [starterUid, uid],
+        created_at: new Date(),
+      });
+      const conversationDoc = await documentRef.get();
+      const conversation = {
+        ...conversationDoc.data(),
+        id: conversationDoc.id,
+      };
+      functions.logger.log(conversation);
+      res.send({ status: "success", conversation: conversation });
+      return;
+    } catch (err) {
+      res.status(400).send({ status: "UID not found" });
+      return;
+    }
+  });
+});
+
+exports.getUserInfoById = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { uid } = JSON.parse(req.body);
+      functions.logger.log(req);
+      const { displayName, photoURL } = await admin.auth().getUser(uid);
+      functions.logger.log(displayName, photoURL);
+      res.send({ displayName, photoURL });
+    } catch (err) {
+      functions.logger.log(err);
+      res.status(400).send({ status: "Unexpected error ocurred" });
+    }
+  });
+});
