@@ -21,7 +21,7 @@ import { getReminder, updateReminder } from "../services/firebase";
 import { Day, ReminderType } from "../types";
 import {
   dateStringToDate,
-  getReminderIdFromUrl,
+  getParamFromUrl,
   isDateStringValid,
   toTimestamp,
 } from "../utils";
@@ -44,7 +44,7 @@ const EditReminderPage = () => {
   };
 
   useEffect(() => {
-    setReminderId(getReminderIdFromUrl());
+    setReminderId(getParamFromUrl("reminder_id"));
   }, []);
 
   const handleSubmit: FormEventHandler<HTMLDivElement> = async (e) => {
